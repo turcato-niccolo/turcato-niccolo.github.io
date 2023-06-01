@@ -8,6 +8,7 @@ redirect_from:
 ---
 
 {% include base_path %}
+<a href="https://turcato-niccolo.github.io/files/CV.pdf">Complete CV</a> <br/>
 
 Education
 ======
