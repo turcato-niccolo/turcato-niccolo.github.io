@@ -11,30 +11,32 @@ redirect_from:
 
 Education
 ======
-* B.S. in GitHub, GitHub University, 2012
-* M.S. in Jekyll, GitHub University, 2014
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
+* B.S. in Ingegneria Informatica, Università degli Studi di Padova, 2020
+* M.S. in Computer Engineering, Università degli Studi di Padova, 2022
+* Ph.D in Information Engineering, Università degli Studi di Padova, 2026 (expected)
 
 Work experience
 ======
-* Summer 2015: Research Assistant
-  * Github University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
+* 2021-2023, Tutor for Calculus 1 and Linear Algebra Information Engineering and Industrial Engineering B.S. courses.
+* 2022, Teaching assistant for Reinforment Learning for Control System Engineering M.S. course.
 
-* Fall 2015: Research Assistant
-  * Github University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
-  
+
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+* B2 level English
+* Programming 
+  * Python
+  * C++
+  * Matlab
+  * Java
+  * C#
+  * ARM assembly
+* Software development and versioning
+* LaTeX
+* Web development
+* Computer systems and computer networks repair and maintenance
+* Video editing
+* CAD
 
 Publications
 ======
