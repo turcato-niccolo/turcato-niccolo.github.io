@@ -12,8 +12,12 @@ redirect_from:
 
 Education
 ======
-* B.S. in Ingegneria Informatica, Università degli Studi di Padova, 2020
+* B.S. in Ingegneria Informatica, Università degli Studi di Padova, 2020 
+  * Tesi: <a href="https://turcato-niccolo.github.io/files/turcato_niccolo_tesi_triennale.pdf">"Implementazione dell’euristico ZIRound
+per problemi MIP"</a>
 * M.S. in Computer Engineering, Università degli Studi di Padova, 2022
+  * Thesis: <a href="https://turcato-niccolo.github.io/files/Master_Thesis___Turcato_Niccolo.pdf">"Model-Based Reinforcement Learning for
+industrial robotics applications"</a>
 * Ph.D in Information Engineering, Università degli Studi di Padova, 2026 (expected)
 
 Work experience
