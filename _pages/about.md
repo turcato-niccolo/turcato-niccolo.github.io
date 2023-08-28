@@ -9,3 +9,9 @@ redirect_from:
 ---
 
 <img src='/images/toss.gif'>
+<video width="320" height="240" controls>
+  <source src='videos/pendubot.avi' type=video/avi>
+</video>
+<video width="320" height="240" controls>
+  <source src='videos/acrobot.avi' type=video/avi>
+</video>
