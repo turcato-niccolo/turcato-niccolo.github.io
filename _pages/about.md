@@ -9,7 +9,3 @@ redirect_from:
 ---
 
 <img src='/images/toss.gif'>
-<video width="320" height="240" controls>
-  <source src='/videos/pendubot.mp4' type=video/mp4>
-  <source src='/videos/acrobot.mp4' type=video/mp4>
-</video>s
