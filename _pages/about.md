@@ -11,5 +11,5 @@ redirect_from:
 <img src='/images/toss.gif'>
 
 <iframe width="420" height="315"
-src="https://www.youtube.com/watch?v=-1qCz1fJmT4&t=928s&pp=ygUQbmljY29sw7IgdHVyY2F0bw%3D%3D">
+src="https://www.youtube.com/watch?v=-1qCz1fJmT4">
 </iframe>
