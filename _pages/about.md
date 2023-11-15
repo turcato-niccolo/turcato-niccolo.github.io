@@ -10,6 +10,5 @@ redirect_from:
 
 <img src='/images/toss.gif'>
 
-<iframe width="420" height="315"
-src="https://www.youtube.com/watch?v=-1qCz1fJmT4">
-</iframe>
+
+<iframe src="https://www.youtube.com/watch?v=-1qCz1fJmT4" width="560" height="315" frameborder="0" allowfullscreen></iframe>
