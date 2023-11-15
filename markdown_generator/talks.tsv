@@ -1,3 +1,4 @@
 title	type	url_slug	venue	date	location	talk_url	description
 AI Olympics with RealAIGym	aiolympics	talk1	IJCAI 2023	2023-08-25	MACAO S.A.R.,	https://www.youtube.com/watch?v=-1qCz1fJmT4	This talk addresses the success of Model-Based Reinforcement Learning in conquering the athletic intelligence challenge at IJCAI 2023, which revolved around the swing-up and stabilization of two underactuated 2-link robot systems. Our team secured first place in the competition by leveraging Model-Based Reinforcement Learning, competing against two teams that employed Model-Free Reinforcement Learning. This success underscores the efficacy of our approach in controlling underactuated robots.
+<iframe src="https://www.youtube.com/embed/-1qCz1fJmT4?autoplay=1" width="560" height="315" frameborder="0" allowfullscreen></iframe>
 Team: Alberto Dalla Libera, Niccolo' Turcato, Giulio Giacomuzzo, Ruggero Carli and Diego Romeres.
