@@ -28,6 +28,9 @@ Work experience
 
 Skills
 ======
+* Robotics (manipulation, mobile robotics)
+* Reinforcement Learning
+* Machine Learning
 * B2 level English
 * Programming 
   * Python
