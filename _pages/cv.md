@@ -23,7 +23,7 @@ industrial robotics applications"</a>
 Work experience
 ======
 * 2021-2023, Tutor for Calculus 1 and Linear Algebra Information Engineering and Industrial Engineering B.S. courses, UniPD.
-* 2022-2024, Teaching assistant for Reinforment Learning course (Control System Engineering M.S.), UniPD.
+* 2022-2024, Teaching assistant for Reinforcement Learning course (Control System Engineering M.S.), UniPD.
 
 
 Skills
