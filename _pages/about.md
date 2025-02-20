@@ -8,8 +8,8 @@ redirect_from:
   - /about.html
 ---
 
+<iframe src="https://www.youtube.com/embed/-1qCz1fJmT4?autoplay=0" width="560" height="315" frameborder="0" allowfullscreen></iframe>
 
-<iframe src="https://www.youtube.com/watch?v=-1qCz1fJmT4?autoplay=1" width="560" height="315" frameborder="0" allowfullscreen></iframe>
 
 
 <div class="article">
@@ -30,7 +30,7 @@ redirect_from:
         <p>Abstract: As artificial intelligence gains new capabilities, it becomes important to evaluate it on real-world tasks. In particular, the fields of robotics and reinforcement learning (RL) are lacking in standardized benchmarking tasks on real hardware. To facilitate reproducibility and stimulate algorithmic advancements, we held an AI Olympics competition at IJCAI 2023 conference based on the double pendulum system in the RealAIGym project where the participants were asked to develop a controller for the swing up and stabilization task. This paper presents the methods and results from the top participating teams and provides insights into the realworld performance of RL algorithms with respect to a baseline time-varying LQR controller.</p>
     </div>
     <div class="media">
-        <iframe src="https://www.youtube.com/watch?v=eYDH1v1FqF8" frameborder="0" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/watch?v=eYDH1v1FqF8?autoplay=0" frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
 
