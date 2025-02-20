@@ -18,6 +18,7 @@ redirect_from:
         <h2>Teaching a Robot to Toss Arbitrary Objects with Model-Based Reinforcement Learning</h2>
         <p>Niccolò Turcato, Alberto Dalla Libera, Giulio Giacomuzzo, Ruggero Carli</p>
         <p>Abstract: In this paper, we investigate the use of ModelBased Reinforcement Learning (MBRL) for pick-and-throw tasks, which is a variation of the pick-and-place task. In pick-and-throw applications, objects are thrown instead of placed to increase time efficiency and enlarge the workspace reachable by the robot. The effectiveness of analytical methods for this task is limited by the complex system dynamics and the disturbances due to communication and control. Recently, the application of data-driven solutions, in particular Model-Free Reinforcement Learning (MFRL), has attracted attention. In this paper, we explore the use of a MBRL algorithm to solve the pick-and-throw task. Experiments carried out in simulation show the potentialities of our approach, in terms of accuracy and data efficiency, both with respect to analytical methods and a MFRL approach.</p>
+        <p><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10284290" target="_blank">Read on IEEE Xplore</a></p>
     </div>
     <div class="media">
       <img src='/images/toss.gif'>
