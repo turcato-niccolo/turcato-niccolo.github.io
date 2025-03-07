@@ -73,7 +73,7 @@ redirect_from:
     </div>
     <div class="media">
       <iframe src="https://www.youtube.com/embed/rCUJUujnWH0?si=w7hJ1oklsqaDHF4M" frameborder="0" allowfullscreen></iframe>
-      <video id="teaser" autoplay muted loop playsinline height="100%">
+      <video id="teaser" autoplay muted loop playsinline height="50%">
         <source src="/videos/wheelchair_test_15s_single_obj.mp4"
                 type="video/mp4">
       </video>
