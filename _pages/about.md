@@ -9,8 +9,6 @@ redirect_from:
 ---
 
 
-
-
 <h1>Featured Research</h1>
 
 <div class="article">
@@ -25,6 +23,21 @@ redirect_from:
     </div>
     <div class="media">
       <iframe src="https://www.youtube.com/embed/0e8IWstunsc?si=CpZNN23oTZkc7GUL" frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
+
+<div class="article">
+    <div class="text">
+        <h2><a href="https://turcato-niccolo.github.io/papers/towardsARL/index.html">Towards Autonomous Reinforcement Learning for Real-World Robotic Manipulation with Large Language Models</a></h2>
+        <p>Niccolò Turcato, Matteo Iovino, Aris Synodinos, Alberto Dalla Libera, Ruggero Carli, Pietro Falco</p>
+        <details>
+          <summary>Abstract</summary>
+          <p>Recent advancements in Large Language Models (LLMs) and Visual Language Models (VLMs) have significantly impacted robotics, enabling high-level semantic motion planning applications. Reinforcement Learning (RL), a complementary paradigm, enables agents to autonomously optimize complex behaviors through interaction and reward signals. However, designing effective reward functions for RL remains challenging, especially in real-world tasks where sparse rewards are insufficient and dense rewards require elaborate design. In this work, we propose Autonomous Reinforcement learning for Complex HumanInformed Environments (ARCHIE), an unsupervised pipeline leveraging GPT-4, a pre-trained LLM, to generate reward functions directly from natural language task descriptions. The rewards are used to train RL agents in simulated environments, where we formalize the reward generation process to enhance feasibility. Additionally, GPT-4 automates the coding of task success criteria, creating a fully automated, one-shot procedure for translating human-readable text into deployable robot skills. Our approach is validated through extensive simulated experiments on single-arm and bi-manual manipulation tasks using an ABB YuMi collaborative robot, highlighting its practicality and effectiveness. Tasks are demonstrated on the real robot setup.</p>
+        </details>
+        <p><a href="https://arxiv.org/abs/2503.04280" target="_blank">Read on arXiv</a></p>
+    </div>
+    <div class="media">
+      <iframe src="https://www.youtube.com/embed/kaTxZ4oqD6Y?si=SH87tSijp8h2kEhC" frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
 
