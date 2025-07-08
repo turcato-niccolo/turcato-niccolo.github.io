@@ -37,7 +37,7 @@ redirect_from:
         <p><a href="https://arxiv.org/abs/2503.04280" target="_blank">Read on arXiv</a></p>
     </div>
     <div class="media">
-      <iframe src="https://www.youtube.com/embed/kaTxZ4oqD6Y?si=SH87tSijp8h2kEhC" frameborder="0" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/BRu1XSno61M?si=bR3N71_6LHxjgbMe" frameborder="0" allowfullscreen></iframe>
     </div>
 </div>
 
