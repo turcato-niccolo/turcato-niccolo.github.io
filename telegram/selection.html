@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Choose options</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; }
+    .opt { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+    button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; }
+    .row { display: flex; gap: 8px; margin-top: 16px; }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h3 id="title">Choose your options</h3>
+  <div id="list"></div>
+  <div class="row">
+    <button id="submit">Submit</button>
+    <button id="clear">Clear</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // use full height
+    tg.MainButton.hide();
+
+    // Parse URL params
+    const params = new URLSearchParams(location.search);
+    const opts = (params.get("opts") || "Apple,Banana,Cherry").split(",").map(s => s.trim()).filter(Boolean);
+    const multi = params.get("multi") === "1";
+
+    document.getElementById("title").textContent = multi ? "Select one or more" : "Select one";
+
+    const listEl = document.getElementById("list");
+    opts.forEach((label, idx) => {
+      const id = "opt_" + idx;
+      const wrap = document.createElement("label");
+      wrap.className = "opt";
+      const input = document.createElement("input");
+      input.type = multi ? "checkbox" : "radio";
+      input.name = multi ? "mcq" : "scq";
+      input.value = String(idx);
+      input.id = id;
+      const txt = document.createElement("span");
+      txt.textContent = label;
+      wrap.appendChild(input);
+      wrap.appendChild(txt);
+      listEl.appendChild(wrap);
+    });
+
+    function getSelection() {
+      const selIdx = [];
+      const inputs = listEl.querySelectorAll("input");
+      inputs.forEach(i => { if (i.checked) selIdx.push(Number(i.value)); });
+      return selIdx.sort((a,b)=>a-b);
+    }
+
+    document.getElementById("submit").addEventListener("click", () => {
+      const selected = getSelection();
+      const payload = {
+        kind: "choice",
+        multi,
+        selected_ids: selected,
+        selected_labels: selected.map(i => opts[i]),
+        all_options: opts
+      };
+      // Send to bot
+      tg.sendData(JSON.stringify(payload));
+      tg.close(); // close the web app
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      listEl.querySelectorAll("input").forEach(i => i.checked = false);
+    });
+
+    // Apply Telegram theme colors
+    document.body.style.background = tg.themeParams.bg_color || "#ffffff";
+    document.body.style.color = tg.themeParams.text_color || "#000000";
+  </script>
+</body>
+</html>
