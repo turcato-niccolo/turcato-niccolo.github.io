@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Choose options</title>
+  <title>Choose one</title>
   <style>
     body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; }
     .opt { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
@@ -13,7 +13,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h3 id="title">Choose your options</h3>
+  <h3 id="title">Select one</h3>
   <div id="list"></div>
   <div class="row">
     <button id="submit">Submit</button>
@@ -22,61 +22,91 @@
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.expand(); // use full height
+    tg.expand();
     tg.MainButton.hide();
-
-    // Parse URL params
-    const params = new URLSearchParams(location.search);
-    const opts = (params.get("opts") || "Apple,Banana,Cherry").split(",").map(s => s.trim()).filter(Boolean);
-    const multi = params.get("multi") === "1";
-
-    document.getElementById("title").textContent = multi ? "Select one or more" : "Select one";
-
-    const listEl = document.getElementById("list");
-    opts.forEach((label, idx) => {
-      const id = "opt_" + idx;
-      const wrap = document.createElement("label");
-      wrap.className = "opt";
-      const input = document.createElement("input");
-      input.type = multi ? "checkbox" : "radio";
-      input.name = multi ? "mcq" : "scq";
-      input.value = String(idx);
-      input.id = id;
-      const txt = document.createElement("span");
-      txt.textContent = label;
-      wrap.appendChild(input);
-      wrap.appendChild(txt);
-      listEl.appendChild(wrap);
-    });
-
-    function getSelection() {
-      const selIdx = [];
-      const inputs = listEl.querySelectorAll("input");
-      inputs.forEach(i => { if (i.checked) selIdx.push(Number(i.value)); });
-      return selIdx.sort((a,b)=>a-b);
-    }
-
-    document.getElementById("submit").addEventListener("click", () => {
-      const selected = getSelection();
-      const payload = {
-        kind: "choice",
-        multi,
-        selected_ids: selected,
-        selected_labels: selected.map(i => opts[i]),
-        all_options: opts
-      };
-      // Send to bot
-      tg.sendData(JSON.stringify(payload));
-      tg.close(); // close the web app
-    });
-
-    document.getElementById("clear").addEventListener("click", () => {
-      listEl.querySelectorAll("input").forEach(i => i.checked = false);
-    });
 
     // Apply Telegram theme colors
     document.body.style.background = tg.themeParams.bg_color || "#ffffff";
     document.body.style.color = tg.themeParams.text_color || "#000000";
+
+    const listEl = document.getElementById("list");
+    let options = [];
+
+    // Optionally allow ?file=other.json, default to options.json
+    const params = new URLSearchParams(location.search);
+    const file = params.get("file") || "options.json";
+
+    async function loadOptions() {
+      try {
+        const res = await fetch(file, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        // Accept either an array of strings or {options:[...]}
+        options = Array.isArray(data) ? data : (data.options || []);
+        options = options.map(String).map(s => s.trim()).filter(Boolean);
+
+        if (!options.length) throw new Error("Empty options list");
+
+        renderOptions();
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = `<p>Could not load options from <code>${file}</code>.</p>`;
+      }
+    }
+
+    function renderOptions() {
+      listEl.innerHTML = "";
+      options.forEach((label, idx) => {
+        const id = "opt_" + idx;
+        const wrap = document.createElement("label");
+        wrap.className = "opt";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "scq";        // single-choice group
+        input.value = String(idx);
+        input.id = id;
+
+        const txt = document.createElement("span");
+        txt.textContent = label;
+
+        wrap.appendChild(input);
+        wrap.appendChild(txt);
+        listEl.appendChild(wrap);
+      });
+    }
+
+    function getSelection() {
+      const checked = listEl.querySelector('input[name="scq"]:checked');
+      if (!checked) return { index: null, label: null };
+      const i = Number(checked.value);
+      return { index: i, label: options[i] };
+    }
+
+    document.getElementById("submit").addEventListener("click", () => {
+      const sel = getSelection();
+      if (sel.index === null) {
+        alert("Please select one option.");
+        return;
+      }
+      const payload = {
+        kind: "choice",
+        multi: false,
+        selected_ids: [sel.index],
+        selected_labels: [sel.label],
+        all_options: options
+      };
+      tg.sendData(JSON.stringify(payload));
+      tg.close();
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      const checked = listEl.querySelector('input[name="scq"]:checked');
+      if (checked) checked.checked = false;
+    });
+
+    loadOptions();
   </script>
 </body>
 </html>
