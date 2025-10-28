@@ -5,119 +5,136 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Choose one</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; }
-    .opt { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
-    button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; }
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --card: rgba(0,0,0,0.04);
+      --muted: rgba(0,0,0,0.6);
+    }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: var(--bg); color: var(--fg); }
+    h3 { margin: 0 0 12px 0; }
+    .opt { display: flex; align-items: center; gap: 8px; padding: 10px 8px; border-radius: 10px; }
+    .opt:hover { background: var(--card); }
     .row { display: flex; gap: 8px; margin-top: 16px; }
+    button { padding: 10px 16px; border: 0; border-radius: 10px; cursor: pointer; }
+    #error { margin-top: 8px; color: var(--muted); }
+    .card { padding: 12px; border-radius: 12px; background: var(--card); }
   </style>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <h3 id="title">Select one</h3>
-  <div id="list"></div>
+
+  <div id="list" class="card"></div>
+  <div id="error"></div>
+
   <div class="row">
     <button id="submit">Submit</button>
     <button id="clear">Clear</button>
   </div>
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-  tg.MainButton.hide();
 
-  // Apply Telegram theme colors
-  document.body.style.background = tg.themeParams.bg_color || "#ffffff";
-  document.body.style.color = tg.themeParams.text_color || "#000000";
+  <script>
+    const tg = window.Telegram?.WebApp;
+    tg?.expand();
+    tg?.MainButton?.hide();
 
-  const listEl = document.getElementById("list");
-  let options = [];
+    // Apply Telegram theme colors if available
+    if (tg?.themeParams) {
+      document.documentElement.style.setProperty("--bg", tg.themeParams.bg_color || "#ffffff");
+      document.documentElement.style.setProperty("--fg", tg.themeParams.text_color || "#000000");
+      document.documentElement.style.setProperty("--card", tg.themeParams.secondary_bg_color ? (tg.themeParams.secondary_bg_color) : "rgba(0,0,0,0.04)");
+      document.documentElement.style.setProperty("--muted", tg.themeParams.hint_color || "rgba(0,0,0,0.6)");
+    }
 
-  const params = new URLSearchParams(location.search);
-  // Optional: inline options via ?options=["A","B"] (URL-encoded JSON)
-  const inlineOptions = params.get("options");
-  // Or load from a file via ?file=other.json (default: options.json)
-  const file = params.get("file") || "options.json";
+    const listEl = document.getElementById("list");
+    const errorEl = document.getElementById("error");
+    const titleEl = document.getElementById("title");
 
-  function showError(msg) {
-    listEl.innerHTML = `
-      <p style="margin:0 0 8px 0;">${msg}</p>
-      <details>
-        <summary>Troubleshooting</summary>
-        <ul style="margin:6px 0 0 18px;">
-          <li>Ensure <code>${file}</code> is in the same folder as this page.</li>
-          <li>Serve over HTTP(S) (not <code>file://</code>). For local dev: <code>python -m http.server</code>.</li>
-          <li>If using another domain, enable CORS and set <code>Content-Type: application/json</code>.</li>
-        </ul>
-      </details>
-    `;
-  }
-
-  async function loadOptions() {
-    // 1) Inline options via URL param takes priority if present
     const params = new URLSearchParams(location.search);
-    const inlineOptions = params.get("options");
-    if (inlineOptions) {
-      const parsed = JSON.parse(inlineOptions);
-      options = (Array.isArray(parsed) ? parsed : (parsed.options || []))
-        .map(String).map(s => s.trim()).filter(Boolean);
-      renderOptions();
-      return; // ensure you don’t fall through to fetch
+    const inlineOptions = params.get("options"); // URL-encoded JSON: ["A","B"] or {"options":["A","B"]}
+    const customTitle = params.get("title"); // optional
+    if (customTitle) titleEl.textContent = customTitle;
+
+    let options = [];
+
+    function showError(msg) {
+      errorEl.innerHTML = '<small>' + msg + '</small>';
     }
 
-  function renderOptions() {
-    listEl.innerHTML = "";
-    options.forEach((label, idx) => {
-      const id = "opt_" + idx;
-      const wrap = document.createElement("label");
-      wrap.className = "opt";
+    function renderOptions() {
+      listEl.innerHTML = "";
+      options.forEach((label, idx) => {
+        const id = "opt_" + idx;
+        const wrap = document.createElement("label");
+        wrap.className = "opt";
 
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = "scq";
-      input.value = String(idx);
-      input.id = id;
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "scq";
+        input.value = String(idx);
+        input.id = id;
 
-      const txt = document.createElement("span");
-      txt.textContent = label;
+        const txt = document.createElement("span");
+        txt.textContent = label;
 
-      wrap.appendChild(input);
-      wrap.appendChild(txt);
-      listEl.appendChild(wrap);
+        wrap.appendChild(input);
+        wrap.appendChild(txt);
+        listEl.appendChild(wrap);
+      });
+    }
+
+    function getSelection() {
+      const checked = listEl.querySelector('input[name="scq"]:checked');
+      if (!checked) return { index: null, label: null };
+      const i = Number(checked.value);
+      return { index: i, label: options[i] };
+    }
+
+    // Load options from the URL param
+    (function loadFromParam() {
+      if (!inlineOptions) {
+        showError('Missing URL parameter <code>?options=...</code>. Example: <code>?options=%5B%22Red%22%2C%22Green%22%2C%22Blue%22%5D</code>');
+        return;
+      }
+      try {
+        const parsed = JSON.parse(inlineOptions);
+        options = (Array.isArray(parsed) ? parsed : (parsed.options || []))
+          .map(String).map(s => s.trim()).filter(Boolean);
+
+        if (!options.length) throw new Error("Empty options list");
+        renderOptions();
+      } catch (e) {
+        console.error("Failed to parse ?options JSON:", e);
+        showError('Could not parse <code>?options=</code> JSON. Use an array like <code>["A","B"]</code> and URL-encode it.');
+      }
+    })();
+
+    document.getElementById("submit").addEventListener("click", () => {
+      const sel = getSelection();
+      if (sel.index === null) {
+        alert("Please select one option.");
+        return;
+      }
+      const payload = {
+        kind: "choice",
+        multi: false,
+        selected_ids: [sel.index],
+        selected_labels: [sel.label],
+        all_options: options
+      };
+      try {
+        tg?.sendData(JSON.stringify(payload));
+        tg?.close();
+      } catch {
+        // Fallback for local testing outside Telegram
+        alert("Payload:\n" + JSON.stringify(payload, null, 2));
+      }
     });
-  }
 
-  function getSelection() {
-    const checked = listEl.querySelector('input[name="scq"]:checked');
-    if (!checked) return { index: null, label: null };
-    const i = Number(checked.value);
-    return { index: i, label: options[i] };
-  }
-
-  document.getElementById("submit").addEventListener("click", () => {
-    const sel = getSelection();
-    if (sel.index === null) {
-      alert("Please select one option.");
-      return;
-    }
-    const payload = {
-      kind: "choice",
-      multi: false,
-      selected_ids: [sel.index],
-      selected_labels: [sel.label],
-      all_options: options
-    };
-    tg.sendData(JSON.stringify(payload));
-    tg.close();
-  });
-
-  document.getElementById("clear").addEventListener("click", () => {
-    const checked = listEl.querySelector('input[name="scq"]:checked');
-    if (checked) checked.checked = false;
-  });
-
-  loadOptions();
-</script>
-
+    document.getElementById("clear").addEventListener("click", () => {
+      const checked = listEl.querySelector('input[name="scq"]:checked');
+      if (checked) checked.checked = false;
+    });
+  </script>
 </body>
 </html>
-
-
