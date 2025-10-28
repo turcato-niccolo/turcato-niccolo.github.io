@@ -19,94 +19,130 @@
     <button id="submit">Submit</button>
     <button id="clear">Clear</button>
   </div>
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+  tg.MainButton.hide();
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.MainButton.hide();
+  // Apply Telegram theme colors
+  document.body.style.background = tg.themeParams.bg_color || "#ffffff";
+  document.body.style.color = tg.themeParams.text_color || "#000000";
 
-    // Apply Telegram theme colors
-    document.body.style.background = tg.themeParams.bg_color || "#ffffff";
-    document.body.style.color = tg.themeParams.text_color || "#000000";
+  const listEl = document.getElementById("list");
+  let options = [];
 
-    const listEl = document.getElementById("list");
-    let options = [];
+  const params = new URLSearchParams(location.search);
+  // Optional: inline options via ?options=["A","B"] (URL-encoded JSON)
+  const inlineOptions = params.get("options");
+  // Or load from a file via ?file=other.json (default: options.json)
+  const file = params.get("file") || "options.json";
 
-    // Optionally allow ?file=other.json, default to options.json
-    const params = new URLSearchParams(location.search);
-    const file = params.get("file") || "options.json";
+  function showError(msg) {
+    listEl.innerHTML = `
+      <p style="margin:0 0 8px 0;">${msg}</p>
+      <details>
+        <summary>Troubleshooting</summary>
+        <ul style="margin:6px 0 0 18px;">
+          <li>Ensure <code>${file}</code> is in the same folder as this page.</li>
+          <li>Serve over HTTP(S) (not <code>file://</code>). For local dev: <code>python -m http.server</code>.</li>
+          <li>If using another domain, enable CORS and set <code>Content-Type: application/json</code>.</li>
+        </ul>
+      </details>
+    `;
+  }
 
-    async function loadOptions() {
+  async function loadOptions() {
+    // 1) Inline options via URL param takes priority if present
+    if (inlineOptions) {
       try {
-        const res = await fetch(file, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        // Accept either an array of strings or {options:[...]}
-        options = Array.isArray(data) ? data : (data.options || []);
-        options = options.map(String).map(s => s.trim()).filter(Boolean);
-
-        if (!options.length) throw new Error("Empty options list");
-
+        const parsed = JSON.parse(inlineOptions);
+        options = (Array.isArray(parsed) ? parsed : (parsed.options || []))
+          .map(String).map(s => s.trim()).filter(Boolean);
+        if (!options.length) throw new Error("Empty inline options");
         renderOptions();
-      } catch (err) {
-        console.error(err);
-        listEl.innerHTML = `<p>Could not load options from <code>${file}</code>.</p>`;
-      }
-    }
-
-    function renderOptions() {
-      listEl.innerHTML = "";
-      options.forEach((label, idx) => {
-        const id = "opt_" + idx;
-        const wrap = document.createElement("label");
-        wrap.className = "opt";
-
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "scq";        // single-choice group
-        input.value = String(idx);
-        input.id = id;
-
-        const txt = document.createElement("span");
-        txt.textContent = label;
-
-        wrap.appendChild(input);
-        wrap.appendChild(txt);
-        listEl.appendChild(wrap);
-      });
-    }
-
-    function getSelection() {
-      const checked = listEl.querySelector('input[name="scq"]:checked');
-      if (!checked) return { index: null, label: null };
-      const i = Number(checked.value);
-      return { index: i, label: options[i] };
-    }
-
-    document.getElementById("submit").addEventListener("click", () => {
-      const sel = getSelection();
-      if (sel.index === null) {
-        alert("Please select one option.");
         return;
+      } catch (e) {
+        console.warn("Failed to parse ?options JSON:", e);
       }
-      const payload = {
-        kind: "choice",
-        multi: false,
-        selected_ids: [sel.index],
-        selected_labels: [sel.label],
-        all_options: options
-      };
-      tg.sendData(JSON.stringify(payload));
-      tg.close();
-    });
+    }
 
-    document.getElementById("clear").addEventListener("click", () => {
-      const checked = listEl.querySelector('input[name="scq"]:checked');
-      if (checked) checked.checked = false;
-    });
+    // 2) Fetch from file (same-origin/same-path recommended)
+    try {
+      // Resolve file relative to the current page URL
+      const url = new URL(file, location.href).href;
+      const res = await fetch(url, { cache: "no-store" });
 
-    loadOptions();
-  </script>
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      }
+      const data = await res.json();
+
+      // Accept either an array or { options: [...] }
+      options = Array.isArray(data) ? data : (data.options || []);
+      options = options.map(String).map(s => s.trim()).filter(Boolean);
+
+      if (!options.length) throw new Error("Empty options list");
+      renderOptions();
+    } catch (err) {
+      console.error(err);
+      showError(`Could not load options from <code>${file}</code>.`);
+    }
+  }
+
+  function renderOptions() {
+    listEl.innerHTML = "";
+    options.forEach((label, idx) => {
+      const id = "opt_" + idx;
+      const wrap = document.createElement("label");
+      wrap.className = "opt";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "scq";
+      input.value = String(idx);
+      input.id = id;
+
+      const txt = document.createElement("span");
+      txt.textContent = label;
+
+      wrap.appendChild(input);
+      wrap.appendChild(txt);
+      listEl.appendChild(wrap);
+    });
+  }
+
+  function getSelection() {
+    const checked = listEl.querySelector('input[name="scq"]:checked');
+    if (!checked) return { index: null, label: null };
+    const i = Number(checked.value);
+    return { index: i, label: options[i] };
+  }
+
+  document.getElementById("submit").addEventListener("click", () => {
+    const sel = getSelection();
+    if (sel.index === null) {
+      alert("Please select one option.");
+      return;
+    }
+    const payload = {
+      kind: "choice",
+      multi: false,
+      selected_ids: [sel.index],
+      selected_labels: [sel.label],
+      all_options: options
+    };
+    tg.sendData(JSON.stringify(payload));
+    tg.close();
+  });
+
+  document.getElementById("clear").addEventListener("click", () => {
+    const checked = listEl.querySelector('input[name="scq"]:checked');
+    if (checked) checked.checked = false;
+  });
+
+  loadOptions();
+</script>
+
 </body>
 </html>
+
