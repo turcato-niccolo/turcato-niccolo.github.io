@@ -53,41 +53,15 @@
 
   async function loadOptions() {
     // 1) Inline options via URL param takes priority if present
+    const params = new URLSearchParams(location.search);
+    const inlineOptions = params.get("options");
     if (inlineOptions) {
-      try {
-        const parsed = JSON.parse(inlineOptions);
-        options = (Array.isArray(parsed) ? parsed : (parsed.options || []))
-          .map(String).map(s => s.trim()).filter(Boolean);
-        if (!options.length) throw new Error("Empty inline options");
-        renderOptions();
-        return;
-      } catch (e) {
-        console.warn("Failed to parse ?options JSON:", e);
-      }
-    }
-
-    // 2) Fetch from file (same-origin/same-path recommended)
-    try {
-      // Resolve file relative to the current page URL
-      const url = new URL(file, location.href).href;
-      const res = await fetch(url, { cache: "no-store" });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText}`);
-      }
-      const data = await res.json();
-
-      // Accept either an array or { options: [...] }
-      options = Array.isArray(data) ? data : (data.options || []);
-      options = options.map(String).map(s => s.trim()).filter(Boolean);
-
-      if (!options.length) throw new Error("Empty options list");
+      const parsed = JSON.parse(inlineOptions);
+      options = (Array.isArray(parsed) ? parsed : (parsed.options || []))
+        .map(String).map(s => s.trim()).filter(Boolean);
       renderOptions();
-    } catch (err) {
-      console.error(err);
-      showError(`Could not load options from <code>${file}</code>.`);
+      return; // ensure you don’t fall through to fetch
     }
-  }
 
   function renderOptions() {
     listEl.innerHTML = "";
@@ -145,4 +119,5 @@
 
 </body>
 </html>
+
 
